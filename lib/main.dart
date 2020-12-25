@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import './components/catImageAndText.dart';
 import './components/food_card.dart';
 import 'dataForCategories.dart';
 import 'dataForFoods.dart';
+import 'package:http/http.dart' as http;
 
 //screens
 import './detailsPage.dart';
@@ -25,9 +28,40 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<DataForCategories> _dataForCategories = dataForCategories;
-  final List<DataForFoods> _dataForFoods = dataForFoods;
+  List<DataForCategories> _dataForCategories = []; //dataForCategories;
+  List<DataForFoods> _dataForFoods = [];
+
   final int activeIndex = null;
+  getDataForCategoreis() {
+    var data = json.decode(testData);
+    for (var cat in data) {
+      DataForCategories _dataForCats = DataForCategories(
+          id: cat["id"], imagePath: cat["imagePath"], name: cat["name"]);
+      _dataForCategories.add(_dataForCats);
+    }
+    print(_dataForCategories);
+    return _dataForCategories;
+  }
+
+  getDataForFoods() {
+    var data = json.decode(dataForFoods);
+    for (var food in data) {
+      DataForFoods foods = DataForFoods(
+          id: food['id'],
+          imagePath: food['imagePath'],
+          foodName: food['foodName'],
+          otherText: food['otherText'],
+          price: food['price']);
+      _dataForFoods.add(foods);
+    }
+    return _dataForFoods;
+  }
+
+  @override
+  void initState() {
+    getDataForCategoreis();
+    getDataForFoods();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,12 +128,14 @@ class _MyAppState extends State<MyApp> {
             scrollDirection: Axis.horizontal,
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: _dataForCategories
-                    .map((data) => CatImageAndText(
-                          data.imagePath,
-                          data.name,
-                        ))
-                    .toList()),
+                children: _dataForCategories == null
+                    ? []
+                    : _dataForCategories
+                        .map((data) => CatImageAndText(
+                              data.imagePath,
+                              data.name,
+                            ))
+                        .toList()),
           ),
           SizedBox(
             height: 20,
@@ -112,16 +148,10 @@ class _MyAppState extends State<MyApp> {
                 return;
               },
               child: ListView(
-                children: _dataForFoods
-                    .map(
-                      (data) => FoodCard(
-                        data.imagePath,
-                        data.foodName,
-                        data.otherText,
-                        data.price,
-                      ),
-                    )
-                    .toList(),
+                children: _dataForFoods == null
+                    ? []
+                    : _dataForFoods.map((data) => FoodCard(data.imagePath,
+                        data.foodName, data.otherText, data.price)).toList(),
               ),
             ),
           ),

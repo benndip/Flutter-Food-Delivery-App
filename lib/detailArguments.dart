@@ -2,7 +2,7 @@ class DetailArguments {
   final String imagePath;
   final String largeText;
   final String smallText;
-  final String price;
+  final int price;
 
   DetailArguments(
     this.imagePath,

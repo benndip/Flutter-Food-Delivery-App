@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import '../detailsPage.dart';
 
 class FoodCard extends StatelessWidget {
-  final String imagePath, largeText, smallText, price;
+  final String imagePath, largeText, smallText;
+  final int price;
 
   FoodCard(this.imagePath, this.largeText, this.smallText, this.price);
 
@@ -44,7 +45,7 @@ class FoodCard extends StatelessWidget {
               height: 5,
             ),
             Text(
-              price,
+              ' \$ $price',
               style: TextStyle(
                 color: Colors.green,
                 fontSize: 12,
